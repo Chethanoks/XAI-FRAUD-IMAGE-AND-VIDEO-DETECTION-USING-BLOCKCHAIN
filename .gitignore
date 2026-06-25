@@ -1,0 +1,41 @@
+# Python
+venv/
+__pycache__/
+*.pyc
+*.pyo
+*.egg-info/
+.eggs/
+dist/
+build/
+*.pt
+*.pth
+
+# Checkpoints (large — don't commit trained models)
+checkpoints/
+
+# Environment
+.env
+
+# Uploads / temp
+uploads/
+tmp/
+
+# Node
+node_modules/
+frontend/dist/
+contracts/node_modules/
+contracts/artifacts/
+contracts/cache/
+contracts/deployed.json
+
+# IDE
+.vscode/
+.idea/
+*.swp
+
+# Datasets (never commit datasets)
+datasets/
+
+# OS
+.DS_Store
+Thumbs.db

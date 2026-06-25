@@ -185,4 +185,4 @@ Frontend    React, Vite, TailwindCSS, Recharts, react-dropzone
 
 ---
 
-Built by Chethan · Dayananda Sagar University · Prof. Sugandha Saxena
+Built by Chethan K S

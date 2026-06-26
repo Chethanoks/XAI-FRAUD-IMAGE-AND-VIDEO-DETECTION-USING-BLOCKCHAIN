@@ -1,0 +1,69 @@
+@import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:wght@300;400;500&family=Inter:wght@400;500;600&display=swap');
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --ink: #0F0E17;
+  --ink2: #2D2B3F;
+  --muted: #6B6B80;
+  --border: rgba(15,14,23,0.09);
+  --border2: rgba(15,14,23,0.15);
+  --surface: #F7F6FA;
+  --white: #FFFFFF;
+  --violet: #5B4EE8;
+  --violet-light: #EAE8FC;
+  --violet-mid: #8B7FF4;
+  --red: #E03E3E;
+  --red-light: #FDEAEA;
+  --green: #1A8A4A;
+  --green-light: #E6F7EE;
+  --amber: #B45309;
+  --amber-light: #FEF3C7;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  font-family: 'Inter', system-ui, sans-serif;
+  background: var(--surface);
+  color: var(--ink);
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+.font-syne { font-family: 'Syne', sans-serif; }
+.font-mono { font-family: 'DM Mono', monospace; }
+
+@layer utilities {
+  .btn {
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    font-size: 13px;
+    padding: 10px 22px;
+    border-radius: 100px;
+    border: none;
+    cursor: pointer;
+    transition: all 0.18s;
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+  }
+  .btn-primary {
+    background: var(--violet);
+    color: white;
+  }
+  .btn-primary:hover { background: var(--ink); transform: translateY(-1px); }
+  .btn-outline {
+    background: transparent;
+    color: var(--violet);
+    border: 1.5px solid var(--violet);
+  }
+  .btn-outline:hover { background: var(--violet-light); }
+  .card {
+    background: var(--white);
+    border-radius: 20px;
+    border: 1px solid var(--border);
+    padding: 24px;
+  }
+}

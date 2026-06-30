@@ -1,0 +1,16 @@
+{
+  "name": "deepguard-contracts",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "compile":    "hardhat compile",
+    "test":       "hardhat test",
+    "deploy:mumbai": "hardhat run scripts/deploy.js --network mumbai",
+    "verify":     "hardhat verify --network mumbai"
+  },
+  "devDependencies": {
+    "@nomicfoundation/hardhat-toolbox": "^5.0.0",
+    "hardhat":                          "^2.22.3",
+    "dotenv":                           "^16.4.5"
+  }
+}

@@ -1,6 +1,7 @@
 /**
  * useBlockchain hook
- * Manages MetaMask wallet connection and smart contract interaction.
+ * Manages MetaMask wallet connection and smart contract interaction
+ * on Polygon Amoy testnet (Mumbai was deprecated April 2024).
  */
 import { useState, useCallback } from "react";
 import { ethers } from "ethers";
@@ -15,13 +16,13 @@ const CONTRACT_ABI = [
   "event DetectionSubmitted(uint256 indexed recordId, string indexed fileHash, address indexed submitter, bool isFake, uint16 fakeProbability, uint256 timestamp)",
 ];
 
-// Polygon Mumbai testnet
-const POLYGON_MUMBAI = {
-  chainId:         "0x13881",
-  chainName:       "Polygon Mumbai",
-  nativeCurrency:  { name: "MATIC", symbol: "MATIC", decimals: 18 },
-  rpcUrls:         ["https://rpc-mumbai.maticvigil.com"],
-  blockExplorerUrls: ["https://mumbai.polygonscan.com"],
+// Polygon Amoy testnet (official replacement for deprecated Mumbai)
+const POLYGON_AMOY = {
+  chainId:           "0x13882", // 80002 in hex
+  chainName:         "Polygon Amoy Testnet",
+  nativeCurrency:    { name: "POL", symbol: "POL", decimals: 18 },
+  rpcUrls:           ["https://rpc-amoy.polygon.technology"],
+  blockExplorerUrls: ["https://amoy.polygonscan.com"],
 };
 
 export function useBlockchain() {
@@ -30,29 +31,24 @@ export function useBlockchain() {
   const [loading,   setLoading]   = useState(false);
   const [error,     setError]     = useState(null);
 
-  // ─── Connect wallet ────────────────────────────────────────────────────────
-
   const connect = useCallback(async () => {
     setError(null);
     setLoading(true);
     try {
       if (!window.ethereum) throw new Error("MetaMask not found. Please install it.");
 
-      // Request accounts
       const accounts = await window.ethereum.request({ method: "eth_requestAccounts" });
 
-      // Switch to Polygon Mumbai
       try {
         await window.ethereum.request({
           method: "wallet_switchEthereumChain",
-          params: [{ chainId: POLYGON_MUMBAI.chainId }],
+          params: [{ chainId: POLYGON_AMOY.chainId }],
         });
       } catch (switchErr) {
-        // Chain not added — add it
         if (switchErr.code === 4902) {
           await window.ethereum.request({
             method: "wallet_addEthereumChain",
-            params: [POLYGON_MUMBAI],
+            params: [POLYGON_AMOY],
           });
         }
       }
@@ -71,8 +67,6 @@ export function useBlockchain() {
     setConnected(false);
   }, []);
 
-  // ─── Get contract instance ─────────────────────────────────────────────────
-
   const getContract = useCallback(async (readOnly = false) => {
     if (!window.ethereum) throw new Error("MetaMask not available");
     const provider = new ethers.BrowserProvider(window.ethereum);
@@ -83,8 +77,6 @@ export function useBlockchain() {
     return new ethers.Contract(CONTRACT_ADDRESS, CONTRACT_ABI, signer);
   }, []);
 
-  // ─── Submit detection to blockchain ────────────────────────────────────────
-
   const submitDetection = useCallback(async ({
     fileHash, isFake, fakeProbability, confidence, mediaType, modelsUsed,
   }) => {
@@ -94,15 +86,15 @@ export function useBlockchain() {
     setLoading(true);
     setError(null);
     try {
-      const contract   = await getContract(false);
-      const probBP     = Math.round(fakeProbability * 10000);
-      const tx         = await contract.submitDetection(
+      const contract = await getContract(false);
+      const probBP   = Math.round(fakeProbability * 10000);
+      const tx       = await contract.submitDetection(
         fileHash, isFake, probBP, confidence, mediaType, modelsUsed
       );
-      const receipt    = await tx.wait();
+      const receipt  = await tx.wait();
       return {
         txHash:      receipt.hash,
-        explorerUrl: `https://mumbai.polygonscan.com/tx/${receipt.hash}`,
+        explorerUrl: `https://amoy.polygonscan.com/tx/${receipt.hash}`,
         blockNumber: receipt.blockNumber,
       };
     } catch (e) {
@@ -113,8 +105,6 @@ export function useBlockchain() {
     }
   }, [connected, getContract]);
 
-  // ─── Verify file on-chain ──────────────────────────────────────────────────
-
   const verifyOnChain = useCallback(async (fileHash) => {
     if (!CONTRACT_ADDRESS) return null;
     try {
@@ -123,8 +113,8 @@ export function useBlockchain() {
         await contract.verifyFile(fileHash);
       return {
         analyzed,
-        verdict:      latestVerdict ? "FAKE" : "REAL",
-        timestamp:    Number(latestTimestamp),
+        verdict:       latestVerdict ? "FAKE" : "REAL",
+        timestamp:     Number(latestTimestamp),
         analysisCount: Number(analysisCount),
       };
     } catch {

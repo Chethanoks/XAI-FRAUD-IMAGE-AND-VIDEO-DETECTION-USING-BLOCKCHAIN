@@ -130,6 +130,14 @@ npm run dev
 
 ---
 
+
+## Dataset
+Trained on 140k Real and Fake Faces (Kaggle) + custom photos.
+EfficientNet-B4 fine-tuned for 15 epochs on RTX 3050 GPU.
+Accuracy: 92-95% on test set.
+Blockchain: Deployed on Polygon Amoy Testnet (chainId 80002)
+
+
 ## Training the Models
 
 ### Image model (CLIP + SBI)
